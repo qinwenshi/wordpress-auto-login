@@ -3,7 +3,6 @@
 Template Name: Autologin API Template
 */
 
-$salt = '';
 $err_succ = array(
     'key'   => 0,
     'status' => 'failed'
