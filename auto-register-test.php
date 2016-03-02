@@ -6,17 +6,18 @@ Template Name: Test Auto Register Template
 
 // Define the URL where we will be sending a request for a random key
     $api_url = "http://cloud.xueba.fm/autologin-api/";
-    
+    $salt = 'SxvdhhipYePGaoPxrUDlHxhDMOuARFGaNbLsmEMDPmZYAKRCSYsONQRhejfPAifu';
+
     // If you are using WordPress on website A, you can do the following to get the currently logged in user:
     global $current_user;
     //$user_login = $current_user->user_login;
-    $user_login = 'zhangyu';
-    
+    $user_login = 'zhanggui';
+    $token = sha1($salt . $user_login);
     // Set the parameters
     $params = array(
-        'action'            => 'reigster', // The name of the action on Website B
-        'key'               => '54321', // The key that was set on Website B for authentication purposes.
-        'user_login'       => $user_login // Pass the user_login of the currently logged in user in Website A
+        'action'            => 'register', // The name of the action on Website B
+        'token'             => $token, // The key that was set on Website B for authentication purposes.
+        'user_login'        => $user_login // Pass the user_login of the currently logged in user in Website A
     );
     
     // Send the data using cURL

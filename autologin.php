@@ -24,23 +24,22 @@ if (!is_user_logged_in()) {
             
             // Get the user id then set the login cookies to the browser
             wp_set_auth_cookie($user->ID);
-            
             // To make sure that the login cookies are already set, we double check.
+            
+            if(count($_COOKIE) == 0)
+                wp_redirect( home_url('/autologin/?key=' . $received_key ) );
+
             foreach($_COOKIE as $name => $value) {
-                
                 // Find the cookie with prefix starting with "wordpress_logged_in_"
                 if(substr($name, 0, strlen('wordpress_logged_in_')) == 'wordpress_logged_in_') {
-                
                     // Redirect to account page if the login cookie is already set.
                     wp_redirect( home_url('/wp-admin/admin.php?page=h5p/') );
-                } else {
-                
+                }
+                else {
                     // If NOT set, we loop the URL until login cookie gets set to the browser
                     wp_redirect( home_url('/autologin/?key=' . $received_key ) );
-                    
                 }
             }
-            
         } else {
             echo 'Invalid Authentication Key';
         }
