@@ -3,6 +3,7 @@
 Template Name: Autologin API Template
 */
 
+$salt = '';
 $err_succ = array(
     'key'   => 0,
     'status' => 'failed'
@@ -14,13 +15,17 @@ function verify_token($p_token, $p_login){
    global $err_succ; 
    $verified_token = sha1($salt . $p_login);
     if ($verified_token != $p_token) {
+        $err_succ['status'] = 'verify failed';
         return false;
     }
+    $err_succ['status'] = 'verify succeed';
     return true;
 }
 
 if( !isset($_POST) || !isset($_POST['token']) || !isset( $_POST['user_login'] ) )
 {    
+    $err_succ['status'] = 'field not completed';
+
     $result = $err_succ;
     echo json_encode ($result);
     return;
@@ -84,6 +89,22 @@ if(  $_POST['action'] == 'get_login_key' ) {
     }
 }
 
+function foldLeftMenu($user_id){
+        $user_fold = get_user_meta( $user_id, 'wp_user-settings', true );
+        $exp_array = explode( "&", $user_fold );
+        $exp_array[] = "mfold=f";
+        $exp_array = implode( "&", $exp_array );
+        update_user_meta( $user_id, 'wp_user-settings', $exp_array );
+}
+
+function set_color_schema($user_id, $color="blue"){
+        $args = array(
+        'ID' => $user_id,
+        'admin_color' => $color
+    );
+    wp_update_user( $args );
+}
+
 if( $_POST['action'] == 'register' ) {
     
     if( null == username_exists( $user_login ) ) {
@@ -101,7 +122,9 @@ if( $_POST['action'] == 'register' ) {
         $user = new WP_User( $user_id );
         $user->set_role( 'contributor' );
         $hash_key = md5($user_id + rand(5, 15));
-              
+
+        foldLeftMenu($user_id);
+        set_color_schema($user_id, 'blue');
         // Save the avatar(user_login) and key to the database
         $wpdb->insert(
                 'wp_autologin', 
