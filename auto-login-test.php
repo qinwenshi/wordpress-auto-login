@@ -6,12 +6,23 @@ Template Name: Test Auto Login Template
     // Define the URL where we will be sending a request for a random key
     $api_url = "http://cloud.xueba.fm/autologin-api/";
     $salt = 'SxvdhhipYePGaoPxrUDlHxhDMOuARFGaNbLsmEMDPmZYAKRCSYsONQRhejfPAifu';
+    function generateRandomUserName($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
     // If you are using WordPress on website A, you can do the following to get the currently logged in user:
+
     global $current_user;
     //$user_login = $current_user->user_login;
-    $user_login = 'shiqinwen';
+    $user_login = generateRandomUserName(8);
+    
     $token = sha1($salt . $user_login);
-
+    
     // Set the parameters
     $params = array(
         'action'            => 'get_login_key', // The name of the action on Website B
